@@ -1,0 +1,11 @@
+[project]
+name = "py-clocks"
+version = "0.1.0"
+description = "The py_clocks package is a Python-based project designed for displaying multiple timezone clocks in windows desktop."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "customtkinter>=5.2.2",
+    "pyinstaller>=6.12.0",
+    "pytz>=2025.2",
+]
