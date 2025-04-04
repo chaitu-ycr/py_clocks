@@ -7,7 +7,7 @@ By default app shows the time in the following timezones:
 - Asia/Kolkata
 - Europe/Berlin
 
-![py_clocks_app](data/py_clocks_app.png)
+![py_clocks_app](py_clocks_app.png)
 
 modify the `py_clocks.py` file to add or remove timezones as per your requirement.
 
