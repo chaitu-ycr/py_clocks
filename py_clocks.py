@@ -13,9 +13,10 @@ class PyClocks:
 
     # Constants for the application
     WINDOW_WIDTH = 220
-    WINDOW_HEIGHT = 340
+    WINDOW_HEIGHT = 420
     CLOCK_PADDING = 10
-    WINDOW_BOTTOM_OFFSET = 80
+    WINDOW_BOTTOM_HEIGHT_OFFSET = 100
+    WINDOW_BOTTOM_WIDTH_OFFSET = 15
     WINDOW_TRANSPARENCY = 1.0
 
     # Constants for clock widgets
@@ -41,8 +42,8 @@ class PyClocks:
 
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
-        x = screen_width - self.WINDOW_WIDTH
-        y = screen_height - self.WINDOW_HEIGHT - self.WINDOW_BOTTOM_OFFSET
+        x = screen_width - self.WINDOW_WIDTH - self.WINDOW_BOTTOM_WIDTH_OFFSET
+        y = screen_height - self.WINDOW_HEIGHT - self.WINDOW_BOTTOM_HEIGHT_OFFSET
         self.root.geometry(f"{self.WINDOW_WIDTH}x{self.WINDOW_HEIGHT}+{x}+{y}")
         logging.info("Main application window configured.")
 
@@ -61,17 +62,20 @@ class PyClocks:
 
         ctk.CTkLabel(frame, text=label_text, font=self.TITLE_FONT, text_color=text_color).pack(pady=(10, 5))
         time_label = ctk.CTkLabel(frame, text="", font=self.TIME_FONT, text_color=text_color)
-        time_label.pack(padx=20, pady=10)
+        time_label.pack(padx=20, pady=(10, 0))
+        date_label = ctk.CTkLabel(frame, text="", font=("Arial", 12), text_color=text_color)
+        date_label.pack(padx=20, pady=(0, 10))
 
-        self.start_clock_update(time_label, timezone, label_text)
+        self.start_clock_update(time_label, date_label, timezone, label_text)
         logging.info(f"Clock widget added for timezone: {timezone} ({label_text}).")
 
-    def start_clock_update(self, time_label, timezone, label_text):
+    def start_clock_update(self, time_label, date_label, timezone, label_text):
         """
         Starts the periodic update of the clock display.
 
         Args:
             time_label (CTkLabel): The label to update with the current time.
+            date_label (CTkLabel): The label to update with the current date.
             timezone (str): The timezone for the clock.
             label_text (str): The label text for logging purposes.
         """
@@ -82,11 +86,15 @@ class PyClocks:
                 current_time = now.strftime("%I:%M:%S %p")
                 iso_week = f"CW {now.isocalendar()[1]}"
                 time_label.configure(text=f"{current_time} ({iso_week})")
+                date_str = now.strftime("%A, %Y-%m-%d")
+                date_label.configure(text=date_str)
             except pytz.UnknownTimeZoneError:
                 time_label.configure(text=self.INVALID_TIMEZONE_MSG)
+                date_label.configure(text="")
                 logging.error(f"Unknown timezone: {timezone} for {label_text}.")
             except Exception as e:
                 time_label.configure(text=self.GENERIC_ERROR_MSG)
+                date_label.configure(text="")
                 logging.error(f"Error updating clock for {label_text}: {e}")
             self.root.after(self.UPDATE_INTERVAL, update_clock)
 
